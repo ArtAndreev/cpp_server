@@ -2,7 +2,6 @@
 #define CPP_SERVER_SERVER_HPP
 
 #include <boost/asio.hpp>
-#include <string>
 
 #include "TCP_connection.hpp"
 
@@ -18,7 +17,7 @@ class TCP_server {
     const unsigned short port;
 
     /// The io_context object provides I/O services, such as sockets, that the server object will use.
-    boost::asio::io_context context;
+    boost::asio::io_context io_context;
     /// The type of a TCP endpoint.
     boost::asio::ip::tcp::endpoint endpoint;
     /// Provides the ability to accept new connections (TCP).

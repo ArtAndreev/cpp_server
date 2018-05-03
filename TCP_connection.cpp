@@ -13,7 +13,7 @@ boost::asio::ip::tcp::socket& TCP_connection::get_socket() {
 
 void TCP_connection::read() {
     /// read the request
-    // example: echo
+    // example: read
     socket.async_read_some(
         boost::asio::buffer(request),
         boost::bind(&TCP_connection::handle_read,
@@ -26,21 +26,18 @@ void TCP_connection::handle_read(const boost::system::error_code& error,
                                  size_t bytes_transferred) {
     /// send the response
     // handle the error
-    if (error == boost::asio::error::eof)
-    {
-        std::cout << "Disconnected client with IP: "
-                  << socket.remote_endpoint().address().to_string()
-                  << std::endl;
-    }
     if (error) return;
 
-    // example: echo
-    response = request;
+    // example: hello, world
+    int k = snprintf(response, sizeof(response), "HTTP/1.1 200 OK\r\n");
+    k += snprintf(response + k, sizeof(response) - k, "Content-Length: 13\r\n\r\n");
+    k += snprintf(response + k, sizeof(response) - k, "Hello, world!");
     socket.async_write_some(
         boost::asio::buffer(response),
-        boost::bind(&TCP_connection::handle_read, shared_from_this(),
-                    boost::asio::placeholders::error,
-                    boost::asio::placeholders::bytes_transferred));
-//    read();
+        [self = shared_from_this()](const boost::system::error_code& e,
+                                    std::size_t bytes_transferred)->void {
+            // Read again
+            //self->read();
+        });
 }
 
